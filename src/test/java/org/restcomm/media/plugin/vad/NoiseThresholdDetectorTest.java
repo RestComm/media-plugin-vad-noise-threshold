@@ -21,22 +21,15 @@
 
 package org.restcomm.media.plugin.vad;
 
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
-import org.restcomm.media.plugin.vad.NoiseThresholdDetectorSpringPlugin;
+import static org.junit.Assert.*;
 
 /**
   * @author Vladimir Morosev (vladimir.morosev@telestax.com)
@@ -45,11 +38,12 @@ public class NoiseThresholdDetectorTest {
 
     private static final Logger log = Logger.getLogger(NoiseThresholdDetectorTest.class);
 
+    @Test
     public void testSilence() {
         // given
         final URL inputFileUrl = this.getClass().getResource("/test_sound_mono_48_silence.pcm");
         final int packetSize = 480;
-        final VoiceActivityDetector detector = new NoiseThresholdDetectorSpringPlugin(10);
+        final VoiceActivityDetector detector = new NoiseThresholdDetector(10);
 
         // when
         boolean detected = false;
@@ -72,7 +66,7 @@ public class NoiseThresholdDetectorTest {
         // given
         final URL inputFileUrl = this.getClass().getResource("/test_sound_mono_48_speech.pcm");
         final int silenceLevel = 327;
-        final VoiceActivityDetector detector = new NoiseThresholdDetectorSpringPlugin(silenceLevel);
+        final VoiceActivityDetector detector = new NoiseThresholdDetector(silenceLevel);
 
         // when
         boolean detected = false;
@@ -96,7 +90,7 @@ public class NoiseThresholdDetectorTest {
         // given
         final URL inputFileUrl = this.getClass().getResource("/test_sound_mono_48_speech.pcm");
         final int silenceLevel = 328;
-        final VoiceActivityDetector detector = new NoiseThresholdDetectorSpringPlugin(silenceLevel);
+        final VoiceActivityDetector detector = new NoiseThresholdDetector(silenceLevel);
 
         // when
         boolean detected = false;
