@@ -35,39 +35,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 import org.restcomm.media.plugin.vad.NoiseThresholdDetectorSpringPlugin;
 
 /**
   * @author Vladimir Morosev (vladimir.morosev@telestax.com)
   */
-@RunWith(SpringRunner.class)
-@ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 public class NoiseThresholdDetectorTest {
 
     private static final Logger log = Logger.getLogger(NoiseThresholdDetectorTest.class);
 
-    @Autowired(required=true)
-    private VoiceActivityDetector detector;
-
-    @Configuration
-    static class ContextConfiguration {
-
-        @Bean
-        public VoiceActivityDetector detector() {
-            VoiceActivityDetector detector = new NoiseThresholdDetectorSpringPlugin(15);
-            return detector;
-        }
-    }
-
-    @Test
     public void testSilence() {
         // given
         final URL inputFileUrl = this.getClass().getResource("/test_sound_mono_48_silence.pcm");
