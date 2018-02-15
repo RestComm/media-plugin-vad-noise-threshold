@@ -23,47 +23,33 @@ package org.restcomm.media.plugin.vad;
 
 import java.io.IOException;
 
+import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 
 /**
- * Detector for speech signal in provided chunk of audio samples.
+ * Configuration bean for Noise Threshold Detector class.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
  *
  */
-public class NoiseThresholdDetector implements VoiceActivityDetector {
+@Component
+@ConditionalOnBean(NoiseThresholdDetectorSpringPlugin.class)
+@ConfigurationProperties("plugin")
+@EnableConfigurationProperties
+public class NoiseThresholdDetectorSpringConfiguration {
 
-    protected final int silenceLevel;
+    private int silenceLevel;
 
-    public NoiseThresholdDetector(final int silenceLevel) {
-        this.silenceLevel = silenceLevel;
+    public void setSilenceLevel(int level) {
+        silenceLevel = level;
     }
 
-    /**
-     * Checks the sample buffer for speech signal.
-     *
-     * @param data buffer with samples
-     * @param offset the position of first sample in buffer
-     * @param len the number of samples
-     * @return true if silence detected
-     */
-    @Override
-    public boolean detect(byte[] data, int offset, int len) {
-        int[] correllation = new int[len];
-        for (int i = offset; i < len - 1; i += 2) {
-            correllation[i] = (data[i] & 0xff) | (data[i + 1] << 8);
-        }
-
-        double mean = mean(correllation);
-        return mean > silenceLevel;
+    public int getSilenceLevel() {
+        return silenceLevel;
     }
-
-    private double mean(int[] m) {
-        double sum = 0;
-        for (int i = 0; i < m.length; i++) {
-            sum += m[i];
-        }
-        return sum / m.length;
-    }
-
 }
+

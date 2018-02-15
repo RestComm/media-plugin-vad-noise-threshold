@@ -23,13 +23,14 @@ package org.restcomm.media.plugin.vad;
 
 import java.io.IOException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 
 /**
- * Interface for Noise Threshold voice activity plugin component.
+ * Noise Threshold voice activity detector implemented as Spring Boot plugin component.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
  *
@@ -38,9 +39,11 @@ import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 @Component
 public class NoiseThresholdDetectorSpringPlugin extends NoiseThresholdDetector implements NoiseThresholdDetectorPlugin {
 
+    @Autowired(required=true)
+    private NoiseThresholdDetectorSpringConfiguration config;
+
     public NoiseThresholdDetectorSpringPlugin(final int silenceLevel) {
         super(silenceLevel);
     }
-
 }
 
