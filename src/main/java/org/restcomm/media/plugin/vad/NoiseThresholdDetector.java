@@ -21,8 +21,6 @@
 
 package org.restcomm.media.plugin.vad;
 
-import java.io.IOException;
-
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 
 /**

@@ -19,27 +19,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.media.plugin.vad;
+package org.restcomm.media.plugin.vad.spring;
 
-import java.io.IOException;
-
-import org.springframework.stereotype.Component;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
-import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Configuration bean for Noise Threshold Detector class.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
- *
  */
-@Component
-@ConditionalOnBean(NoiseThresholdDetectorSpringPlugin.class)
-@ConfigurationProperties("plugin")
+@Configuration
 @EnableConfigurationProperties
+@PropertySource("classpath:media-plugin-vad-noise-threshold.properties")
+@ConfigurationProperties("media-plugin-vad-noise-threshold")
+@ConditionalOnBean(NoiseThresholdDetectorSpringPlugin.class)
 public class NoiseThresholdDetectorSpringConfiguration {
 
     private int silenceLevel;
@@ -51,5 +49,6 @@ public class NoiseThresholdDetectorSpringConfiguration {
     public int getSilenceLevel() {
         return silenceLevel;
     }
+
 }
 
