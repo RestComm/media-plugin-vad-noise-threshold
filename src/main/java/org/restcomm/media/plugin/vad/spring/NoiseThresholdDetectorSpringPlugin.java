@@ -37,7 +37,7 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(value = "media-plugin-vad-noise-threshold.enabled", havingValue = "true")
 public class NoiseThresholdDetectorSpringPlugin extends NoiseThresholdDetector {
 
-    public NoiseThresholdDetectorSpringPlugin(@Value("${media-plugin-vad-noise-threshold.silenceLevel:42}") final int silenceLevel) {
+    public NoiseThresholdDetectorSpringPlugin(@Value("${media-plugin-vad-noise-threshold.silenceLevel}") final int silenceLevel) {
         super(silenceLevel);
     }
 }
