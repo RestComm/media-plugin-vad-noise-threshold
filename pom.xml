@@ -16,7 +16,7 @@
     <groupId>org.restcomm.media.plugin.vad</groupId>
     <artifactId>media-plugin-vad-noise-threshold</artifactId>
     <name>media-plugin-vad-noise-threshold</name>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-1</version>
 
     <dependencies>
         <!-- Media Core -->
