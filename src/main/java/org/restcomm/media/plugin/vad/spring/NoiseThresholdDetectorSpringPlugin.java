@@ -19,55 +19,26 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.media.plugin.vad;
+package org.restcomm.media.plugin.vad.spring;
 
-import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
+import org.restcomm.media.plugin.vad.NoiseThresholdDetector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * Detector for speech signal in provided chunk of audio samples.
+ * Noise Threshold voice activity detector implemented as Spring Boot plugin component.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
  */
-public class NoiseThresholdDetector implements VoiceActivityDetector {
+@Order(0)
+@Component
+@ConditionalOnProperty(value = "media-plugin-vad-noise-threshold.enabled", havingValue = "true")
+public class NoiseThresholdDetectorSpringPlugin extends NoiseThresholdDetector {
 
-    protected final int silenceLevel;
-
-    public NoiseThresholdDetector(final int silenceLevel) {
-        this.silenceLevel = silenceLevel;
-    }
-
-    /**
-     * Checks the sample buffer for speech signal.
-     *
-     * @param data   buffer with samples
-     * @param offset the position of first sample in buffer
-     * @param len    the number of samples
-     * @return true if silence detected
-     */
-    @Override
-    public boolean detect(byte[] data, int offset, int len) {
-        int[] correllation = new int[len];
-        for (int i = offset; i < len - 1; i += 2) {
-            correllation[i] = (data[i] & 0xff) | (data[i + 1] << 8);
-        }
-
-        double mean = mean(correllation);
-        return mean > silenceLevel;
-    }
-
-    private double mean(int[] m) {
-        double sum = 0;
-        for (int i = 0; i < m.length; i++) {
-            sum += m[i];
-        }
-        return sum / m.length;
-    }
-
-    public int getSilenceLevel() {
-        return silenceLevel;
+    public NoiseThresholdDetectorSpringPlugin(@Value("${media-plugin-vad-noise-threshold.silenceLevel:42}") final int silenceLevel) {
+        super(silenceLevel);
     }
 }
+
