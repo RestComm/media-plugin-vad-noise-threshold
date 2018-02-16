@@ -18,6 +18,10 @@ node("cxs-slave-master") {
         sh "mvn clean install -DskipTests=true"
     }
 
+    stage ('Test') {
+        sh "mvn clean install -Dmaven.test.failure.ignore=true"
+    }
+
     stage ('Archive') {
         archiveArtifacts artifacts: 'target/media-plugin-vad-noise-threshold-*.jar'
     }
