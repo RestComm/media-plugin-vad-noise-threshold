@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.restcomm.media</groupId>
         <artifactId>media-parent</artifactId>
-        <version>1.0.0-15</version>
+        <version>1.0.0-16</version>
     </parent>
 
     <properties>
@@ -24,6 +24,13 @@
             <groupId>org.restcomm.media.core.resource</groupId>
             <artifactId>vad</artifactId>
             <version>${restcomm.media.core.version}</version>
+        </dependency>
+
+        <!-- jUnit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Spring Boot -->
@@ -46,12 +53,12 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-undertow</artifactId>
                 </dependency>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-test</artifactId>
-                    <scope>test</scope>
-                </dependency>
-        -->
+         -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
