@@ -10,7 +10,7 @@
     </parent>
 
     <properties>
-        <restcomm.media.core.version>8.0.0-SNAPSHOT</restcomm.media.core.version>
+        <restcomm.media.core.version>8.0.0-19</restcomm.media.core.version>
     </properties>
 
     <groupId>org.restcomm.media.plugin.vad</groupId>
