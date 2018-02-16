@@ -22,10 +22,6 @@
 package org.restcomm.media.plugin.vad;
 
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
 
 /**
  * Detector for speech signal in provided chunk of audio samples.
@@ -34,9 +30,9 @@ import org.springframework.stereotype.Component;
  */
 public class NoiseThresholdDetector implements VoiceActivityDetector {
 
-    protected final int silenceLevel;
+    private final int silenceLevel;
 
-    public NoiseThresholdDetector(final int silenceLevel) {
+    public NoiseThresholdDetector(int silenceLevel) {
         this.silenceLevel = silenceLevel;
     }
 
@@ -50,12 +46,12 @@ public class NoiseThresholdDetector implements VoiceActivityDetector {
      */
     @Override
     public boolean detect(byte[] data, int offset, int len) {
-        int[] correllation = new int[len];
+        final int[] correlation = new int[len];
         for (int i = offset; i < len - 1; i += 2) {
-            correllation[i] = (data[i] & 0xff) | (data[i + 1] << 8);
+            correlation[i] = (data[i] & 0xff) | (data[i + 1] << 8);
         }
 
-        double mean = mean(correllation);
+        double mean = mean(correlation);
         return mean > silenceLevel;
     }
 
@@ -67,7 +63,4 @@ public class NoiseThresholdDetector implements VoiceActivityDetector {
         return sum / m.length;
     }
 
-    public int getSilenceLevel() {
-        return silenceLevel;
-    }
 }

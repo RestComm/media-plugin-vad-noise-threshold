@@ -1,0 +1,3 @@
+media-plugin-vad-noise-threshold:
+  enabled: true
+  silenceLevel: 10
