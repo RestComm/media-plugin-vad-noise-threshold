@@ -19,26 +19,25 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.restcomm.media.plugin.vad;
+package org.restcomm.media.plugin.vad.spring;
 
-import java.io.IOException;
-
+import org.restcomm.media.plugin.vad.NoiseThresholdDetector;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
-
 /**
- * Interface for Noise Threshold voice activity plugin component.
+ * Noise Threshold voice activity detector implemented as Spring Boot plugin component.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
- *
  */
 @Order(0)
 @Component
-public class NoiseThresholdDetectorSpringPlugin extends NoiseThresholdDetector implements NoiseThresholdDetectorPlugin {
+@ConditionalOnProperty(value = "media-plugin-vad-noise-threshold.enabled", havingValue = "true")
+public class NoiseThresholdDetectorSpringPlugin extends NoiseThresholdDetector {
 
-    public NoiseThresholdDetectorSpringPlugin(final int silenceLevel) {
+    public NoiseThresholdDetectorSpringPlugin(@Value("${media-plugin-vad-noise-threshold.silenceLevel}") int silenceLevel) {
         super(silenceLevel);
     }
 

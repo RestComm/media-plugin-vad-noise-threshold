@@ -32,8 +32,8 @@ import java.net.URL;
 import static org.junit.Assert.*;
 
 /**
-  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
-  */
+ * @author Vladimir Morosev (vladimir.morosev@telestax.com)
+ */
 public class NoiseThresholdDetectorTest {
 
     private static final Logger log = Logger.getLogger(NoiseThresholdDetectorTest.class);
@@ -108,5 +108,4 @@ public class NoiseThresholdDetectorTest {
         // then
         assertFalse(detected);
     }
-
 }

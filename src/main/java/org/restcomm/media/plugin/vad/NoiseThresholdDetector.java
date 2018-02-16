@@ -21,40 +21,37 @@
 
 package org.restcomm.media.plugin.vad;
 
-import java.io.IOException;
-
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 
 /**
  * Detector for speech signal in provided chunk of audio samples.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
- *
  */
 public class NoiseThresholdDetector implements VoiceActivityDetector {
 
     private final int silenceLevel;
 
-    public NoiseThresholdDetector(final int silenceLevel) {
+    public NoiseThresholdDetector(int silenceLevel) {
         this.silenceLevel = silenceLevel;
     }
 
     /**
      * Checks the sample buffer for speech signal.
      *
-     * @param data buffer with samples
+     * @param data   buffer with samples
      * @param offset the position of first sample in buffer
-     * @param len the number of samples
+     * @param len    the number of samples
      * @return true if silence detected
      */
     @Override
     public boolean detect(byte[] data, int offset, int len) {
-        int[] correllation = new int[len];
+        final int[] correlation = new int[len];
         for (int i = offset; i < len - 1; i += 2) {
-            correllation[i] = (data[i] & 0xff) | (data[i + 1] << 8);
+            correlation[i] = (data[i] & 0xff) | (data[i + 1] << 8);
         }
 
-        double mean = mean(correllation);
+        double mean = mean(correlation);
         return mean > silenceLevel;
     }
 
