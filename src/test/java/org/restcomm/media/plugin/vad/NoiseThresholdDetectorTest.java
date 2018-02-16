@@ -108,5 +108,4 @@ public class NoiseThresholdDetectorTest {
         // then
         assertFalse(detected);
     }
-
 }

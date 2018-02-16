@@ -22,27 +22,33 @@
 package org.restcomm.media.plugin.vad;
 
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 /**
  * Detector for speech signal in provided chunk of audio samples.
  *
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
- *
  */
+@Order(0)
+@Component
+@ConditionalOnProperty(value = "media-plugin-vad-noise-threshold.enabled", havingValue = "true")
 public class NoiseThresholdDetector implements VoiceActivityDetector {
 
     protected final int silenceLevel;
 
-    public NoiseThresholdDetector(final int silenceLevel) {
+    public NoiseThresholdDetector(@Value("${media-plugin-vad-noise-threshold.silenceLevel}") final int silenceLevel) {
         this.silenceLevel = silenceLevel;
     }
 
     /**
      * Checks the sample buffer for speech signal.
      *
-     * @param data buffer with samples
+     * @param data   buffer with samples
      * @param offset the position of first sample in buffer
-     * @param len the number of samples
+     * @param len    the number of samples
      * @return true if silence detected
      */
     @Override
@@ -64,4 +70,7 @@ public class NoiseThresholdDetector implements VoiceActivityDetector {
         return sum / m.length;
     }
 
+    public int getSilenceLevel() {
+        return silenceLevel;
+    }
 }
