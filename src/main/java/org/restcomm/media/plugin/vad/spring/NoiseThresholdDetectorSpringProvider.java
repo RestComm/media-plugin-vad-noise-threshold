@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
  */
 @Order(0)
-@Component
+@Component("media-plugin-vad-noise-threshold")
 @ConditionalOnProperty(value = "media-plugin-vad-noise-threshold.enabled", havingValue = "true")
 public class NoiseThresholdDetectorSpringProvider implements VoiceActivityDetectorProvider {
 
