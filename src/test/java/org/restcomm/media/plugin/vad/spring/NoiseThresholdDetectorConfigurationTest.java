@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author Henrique Rosa (henrique.rosa@telestax.com) created on 01/03/2018
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {NoiseThresholdDetectorConfiguration.class}, properties = {"media-plugin-vad-noise-threshold.silenceLevel=55"})
+@SpringBootTest(classes = {NoiseThresholdDetectorConfiguration.class}, properties = {"media-plugin-vad-noise-threshold.enabled=true", "media-plugin-vad-noise-threshold.silenceLevel=55"})
 public class NoiseThresholdDetectorConfigurationTest {
 
     @Autowired

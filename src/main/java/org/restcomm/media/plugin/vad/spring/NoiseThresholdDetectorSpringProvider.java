@@ -24,6 +24,7 @@ package org.restcomm.media.plugin.vad.spring;
 import org.restcomm.media.core.resource.vad.VoiceActivityDetector;
 import org.restcomm.media.core.resource.vad.VoiceActivityDetectorProvider;
 import org.restcomm.media.plugin.vad.NoiseThresholdDetector;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ import org.springframework.stereotype.Component;
  * @author Vladimir Morosev (vladimir.morosev@telestax.com)
  */
 @Component("media-plugin-vad-noise-threshold")
-@ConditionalOnProperty(value = "media-plugin-vad-noise-threshold.enabled", havingValue = "true")
+@ConditionalOnBean(NoiseThresholdDetectorSpringProvider.class)
 public class NoiseThresholdDetectorSpringProvider implements VoiceActivityDetectorProvider {
 
     private int silenceLevel;
