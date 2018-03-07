@@ -12,6 +12,7 @@ node("cxs-slave-master") {
 
     stage ('Versioning') {
         sh "mvn versions:set -DnewVersion=${env.MAJOR_VERSION_NUMBER}-${env.BUILD_NUMBER} -DprocessDependencies=false -DprocessParent=true -Dmaven.test.skip=true"
+        sh "mvn versions:set-property -Dproperty=restcomm.media.core.version -DnewVersion=${env.MEDIA_CORE_VERSION}"
     }
 
     stage ('Build') {
