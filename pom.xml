@@ -24,6 +24,7 @@
             <groupId>org.restcomm.media.core.resource</groupId>
             <artifactId>media-core-resource-vad</artifactId>
             <version>${restcomm.media.core.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Spring Boot -->
