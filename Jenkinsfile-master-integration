@@ -46,7 +46,7 @@ node("cxs-slave-master") {
         sh 'mkdir -p ~/.m2 && sed -i "s|@LOCAL_REPO_PATH@|$WORKSPACE/M2_REPO|g" $WORKSPACE/settings.xml && cp $WORKSPACE/settings.xml -f ~/.m2/settings.xml'
     }
 
-    lock("media-plugin-vad-noise-threshold-${branchBase}") {
+    lock("media-plugin-vad-noise-threshold-$CHANGE_TARGET") {
 
         stage('Versioning') {
             // Checkout change branch
