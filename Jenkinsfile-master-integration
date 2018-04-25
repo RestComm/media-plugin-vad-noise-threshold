@@ -5,12 +5,12 @@ def releaseVersion
 
 node("cxs-slave-master") {
 
-    stage ('Checkout') {
+    stage('Checkout') {
         // Print environment
         echo sh(returnStdout: true, script: 'env')
 
         // Fetch maven settings
-        configFileProvider([configFile(fileId: '37cb206e-6498-4d8a-9b3d-379cd0ccd99b',  targetLocation: 'settings.xml')]) {
+        configFileProvider([configFile(fileId: '37cb206e-6498-4d8a-9b3d-379cd0ccd99b', targetLocation: 'settings.xml')]) {
             sh 'mkdir -p ~/.m2 && sed -i "s|@LOCAL_REPO_PATH@|$WORKSPACE/M2_REPO|g" $WORKSPACE/settings.xml && cp $WORKSPACE/settings.xml -f ~/.m2/settings.xml'
         }
 
@@ -29,7 +29,7 @@ node("cxs-slave-master") {
 }
 
 stage('UserApproval') {
-    timeout(time:5, unit:'DAYS') {
+    timeout(time: 5, unit: 'DAYS') {
         def userInput = input message: 'Waiting for maintainer review', parameters:
                 [choice(name: 'featureScope', choices: 'fix\nfeat\nbreaking_change', description: 'Release Scope'),
                  text(name: 'commitMsg', defaultValue: '', description: 'Commit Message')]
@@ -41,7 +41,7 @@ stage('UserApproval') {
 
 node("cxs-slave-master") {
 
-    configFileProvider([configFile(fileId: '37cb206e-6498-4d8a-9b3d-379cd0ccd99b',  targetLocation: 'settings.xml')]) {
+    configFileProvider([configFile(fileId: '37cb206e-6498-4d8a-9b3d-379cd0ccd99b', targetLocation: 'settings.xml')]) {
         sh 'mkdir -p ~/.m2 && sed -i "s|@LOCAL_REPO_PATH@|$WORKSPACE/M2_REPO|g" $WORKSPACE/settings.xml && cp $WORKSPACE/settings.xml -f ~/.m2/settings.xml'
     }
 
@@ -55,11 +55,11 @@ node("cxs-slave-master") {
             sh "git branch ${localBranch} && git checkout ${localBranch}"
 
             // Increment project version according to release scope
-            if(featureScope == 'fix') {
+            if (featureScope == 'fix') {
                 sh 'mvn build-helper:parse-version versions:set -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.minorVersion}.\\${parsedVersion.nextIncrementalVersion}-SNAPSHOT versions:commit'
-            } else if(featureScope == 'feat') {
+            } else if (featureScope == 'feat') {
                 sh 'mvn build-helper:parse-version versions:set -DnewVersion=\\${parsedVersion.majorVersion}.\\${parsedVersion.nextMinorVersion}.0-SNAPSHOT versions:commit'
-            } else if(featureScope == 'breaking_change') {
+            } else if (featureScope == 'breaking_change') {
                 sh 'mvn build-helper:parse-version versions:set -DnewVersion=\\${parsedVersion.nextMajorVersion}.0.0-SNAPSHOT versions:commit'
             }
 
@@ -72,24 +72,28 @@ node("cxs-slave-master") {
         }
 
         stage('Integration') {
-            // Merge feature to base branch
-            sh "git checkout $CHANGE_TARGET"
-            sh "git merge --squash ${localBranch}"
-            sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
+            try {
+                // Merge feature to base branch
+                sh "git checkout $CHANGE_TARGET && git pull"
+                sh "git merge --squash ${localBranch}"
+                sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
 
-            env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true)
+                env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true)
 
-            def gitLog = sh(script: 'git log -1 --pretty=full', returnStdout: true)
-            echo "${gitLog}"
+                def gitLog = sh(script: 'git log -1 --pretty=full', returnStdout: true)
+                echo "${gitLog}"
 
-            // Push Changes to base branch
-            withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                // Push changes to target branch
-                // TODO sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
+                // Push Changes to base branch
+                withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    // Push changes to target branch
+                    // TODO sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
+                }
+            } catch (exc) {
+                throw exc
+            } finally {
+                // Delete local branch
+                sh "git branch -D ${localBranch}"
             }
-
-            // Delete local branch
-            sh "git branch -D ${localBranch}"
 
             // Invalidate older builds forcing re-scan of PR
             // Aims to maintain master healthy and prevent that one PR tramples another
@@ -102,11 +106,11 @@ node("cxs-slave-master") {
                 env.COMMENT_DATA = """
                     \'{"body":"Closed%20by%20$CURRENT_COMMIT"}\'
                 """
-                def commentResponse = sh (returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data $COMMENT_DATA')
+                def commentResponse = sh(returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data $COMMENT_DATA')
                 echo "${commentResponse}"
 
                 // Set PR state to CLOSED using Github API
-                def closeResponse = sh (returnStdout: true, script: 'curl --request PATCH -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID --data \'{"state":"closed"}\'')
+                def closeResponse = sh(returnStdout: true, script: 'curl --request PATCH -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID --data \'{"state":"closed"}\'')
                 echo "${closeResponse}"
             }
 
