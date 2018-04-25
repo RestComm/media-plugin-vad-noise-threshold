@@ -74,7 +74,7 @@ node("cxs-slave-master") {
         stage('Integration') {
             try {
                 // Merge feature to base branch
-                sh "git checkout $CHANGE_TARGET && git pull"
+                sh "git checkout $CHANGE_TARGET"
                 sh "git merge --squash ${localBranch}"
                 sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
 
