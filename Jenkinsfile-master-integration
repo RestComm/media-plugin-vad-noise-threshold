@@ -99,11 +99,11 @@ node("cxs-slave-master") {
         stage('ClosePR') {
             withCredentials([string(credentialsId: 'ed9ceaaf-b58f-4705-9a9e-da932610cd91', variable: 'GITHUB_TOKEN')]) {
                 // Add comment to relate PR to squashed commit hash using Github API
-                def commentResponse = sh (returnStdout: true, script: 'curl --request POST -H "Token: $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments?body=Closed%20by%20$CURRENT_COMMIT')
+                def commentResponse = sh (returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments?body=Closed%20by%20$CURRENT_COMMIT')
                 echo "${commentResponse}"
 
                 // Set PR state to CLOSED using Github API
-                def closeResponse = sh (returnStdout: true, script: 'curl --request PATCH -H "Token: $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID?state=closed')
+                def closeResponse = sh (returnStdout: true, script: 'curl --request PATCH -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID?state=closed')
                 echo "${closeResponse}"
             }
 
