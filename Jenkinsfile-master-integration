@@ -98,11 +98,11 @@ node("cxs-slave-master") {
 
         stage('ClosePR') {
             // Add comment to relate PR to squashed commit hash using Github API
-            def commentResponse = httpRequest(url: 'https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments?body=Closed%20by%20$CURRENT_COMMIT', httpMode: 'POST', authentication: 'ed9ceaaf-b58f-4705-9a9e-da932610cd91', timeout: 20)
+            def commentResponse = httpRequest(url: 'https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments?body=Closed%20by%20$CURRENT_COMMIT', httpMode: 'POST', authentication: 'CXSGithub', timeout: 20)
             echo "Added closing comment to PR $CHANGE_ID. Status is: ${commentResponse.status}. Response is \n${commentResponse.content}"
 
             // Close Pull Request using Github API
-            def closeResponse = httpRequest(url: 'https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID?state=closed', httpMode: 'PATCH', authentication: 'ed9ceaaf-b58f-4705-9a9e-da932610cd91', timeout: 20)
+            def closeResponse = httpRequest(url: 'https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID?state=closed', httpMode: 'PATCH', authentication: 'CXSGithub', timeout: 20)
             echo "Closed PR $CHANGE_ID. Status is: ${closeResponse.status}. Response is \n${closeResponse.content}"
 
             milestone 3
