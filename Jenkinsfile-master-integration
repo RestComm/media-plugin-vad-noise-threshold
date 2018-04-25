@@ -110,7 +110,7 @@ node("cxs-slave-master") {
                 def requestBody = """
                     {"body": "$CURRENT_COMMIT"}
                 """
-                def commentResponse = httpRequest(url: "https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments", authentication: 'CXSGithub', httpMode: 'POST', requestBody: ${requestBody}, acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON')
+                def commentResponse = httpRequest url: "https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments", authentication: 'CXSGithub', httpMode: 'POST', requestBody: requestBody, acceptType: 'APPLICATION_JSON', contentType: 'APPLICATION_JSON'
                 echo "${commentResponse}"
 
                 // Set PR state to CLOSED using Github API
