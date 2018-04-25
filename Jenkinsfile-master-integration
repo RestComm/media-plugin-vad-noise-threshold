@@ -46,12 +46,14 @@ node("cxs-slave-master") {
         sh 'mkdir -p ~/.m2 && sed -i "s|@LOCAL_REPO_PATH@|$WORKSPACE/M2_REPO|g" $WORKSPACE/settings.xml && cp $WORKSPACE/settings.xml -f ~/.m2/settings.xml'
     }
 
+    def localBranch = "local-$CHANGE_BRANCH"
+
     lock("media-plugin-vad-noise-threshold-$CHANGE_TARGET") {
 
         stage('Versioning') {
             // Checkout change branch
             checkout scm
-            sh "git checkout $CHANGE_BRANCH"
+            sh "git branch ${localBranch} && git checkout ${localBranch}"
 
             // Increment project version according to release scope
             if(featureScope == 'fix') {
@@ -73,7 +75,7 @@ node("cxs-slave-master") {
         stage('Integration') {
             // Merge feature to base branch
             sh "git checkout $CHANGE_TARGET"
-            sh "git merge --squash $CHANGE_BRANCH"
+            sh "git merge --squash ${localBranch}"
             sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
 
             env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true)
@@ -86,6 +88,9 @@ node("cxs-slave-master") {
                 // Push changes to target branch
                 // TODO sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
             }
+
+            // Delete local branch
+            sh "git branch -D ${localBranch}"
 
             // Invalidate older builds forcing re-scan of PR
             // Aims to maintain master healthy and prevent that one PR tramples another
