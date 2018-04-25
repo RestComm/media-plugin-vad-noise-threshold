@@ -106,7 +106,7 @@ node("cxs-slave-master") {
                 env.COMMENT_DATA = """
                     \'{"body":"Closed%20by%20$CURRENT_COMMIT"}\'
                 """
-                def commentResponse = sh(returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data $COMMENT_DATA')
+                def commentResponse = sh(returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data \'{"body":"Closed by $COMMENT_DATA"}\'')
                 echo "${commentResponse}"
 
                 // Set PR state to CLOSED using Github API
