@@ -78,7 +78,7 @@ node("cxs-slave-master") {
                 sh "git merge --squash ${localBranch}"
                 sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
 
-                env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true)
+                env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
                 def gitLog = sh(script: 'git log -1 --pretty=full', returnStdout: true)
                 echo "${gitLog}"
@@ -103,7 +103,7 @@ node("cxs-slave-master") {
         stage('ClosePR') {
             withCredentials([string(credentialsId: 'ed9ceaaf-b58f-4705-9a9e-da932610cd91', variable: 'GITHUB_TOKEN')]) {
                 // Add comment to relate PR to squashed commit hash using Github API
-                def commentResponse = sh(returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data \"{"body":"Closed%20by%20$CURRENT_COMMIT"}\"')
+                def commentResponse = sh(returnStdout: true, script: 'curl --request POST -H \"Authorization: token $GITHUB_TOKEN\" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data \"{\"body\":\"$CURRENT_COMMIT\"}\"')
                 echo "${commentResponse}"
 
                 // Set PR state to CLOSED using Github API
