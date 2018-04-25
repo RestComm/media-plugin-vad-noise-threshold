@@ -1,5 +1,4 @@
 #!/usr/bin/env groovy
-def localBranch
 def featureScope
 def commitMsg
 def releaseVersion
