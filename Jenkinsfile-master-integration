@@ -104,7 +104,7 @@ node("cxs-slave-master") {
             withCredentials([string(credentialsId: 'ed9ceaaf-b58f-4705-9a9e-da932610cd91', variable: 'GITHUB_TOKEN')]) {
                 // Add comment to relate PR to squashed commit hash using Github API
                 env.REQUEST_BODY = """
-                    {"body":"Closed by $CURRENT_COMMIT"}
+                    {"body":"$CURRENT_COMMIT"}
                 """
                 def commentResponse = sh(returnStdout: true, script: 'curl --request POST -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/issues/$CHANGE_ID/comments --data $REQUEST_BODY')
                 echo "${commentResponse}"
