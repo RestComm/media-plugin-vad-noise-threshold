@@ -2,6 +2,7 @@
 def featureScope
 def commitMsg
 def releaseVersion
+def commitAuthor
 
 node("cxs-slave-master") {
 
@@ -16,6 +17,10 @@ node("cxs-slave-master") {
 
         // Checkout PR
         checkout scm
+
+        // Find contributor
+        commitAuthor = sh(script: 'git log -1 HEAD --pretty=format:\'%an <%ae>\'', returnStdout: true).trim()
+        echo "Author is ${commitAuthor}"
     }
 
     stage('Build') {
@@ -76,7 +81,7 @@ node("cxs-slave-master") {
                 // Merge feature to base branch
                 sh "git checkout $CHANGE_TARGET"
                 sh "git merge --squash ${localBranch}"
-                sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
+                sh "git commit -a --author=\"${commitAuthor}\" --message=\"${commitMsg}\""
 
                 env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
