@@ -19,8 +19,12 @@ node("cxs-slave-master") {
         checkout scm
 
         // Find contributor
-        commitAuthor = sh(script: 'git log -1 HEAD~2 --pretty=format:\'%an <%ae>\'', returnStdout: true).trim()
+        commitAuthor = sh(script: 'git log -1 HEAD~1 --pretty=format:\'%an <%ae>\'', returnStdout: true).trim()
         echo "Author is ${commitAuthor}"
+
+        def githubUser = sh(script: 'git config user.name', returnStdout: true).trim()
+        def githubEmail = sh(script: 'git config user.email', returnStdout: true).trim()
+        echo "Github user: ${githubUser} <${githubEmail}>"
     }
 
     stage('Build') {
