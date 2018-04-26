@@ -81,7 +81,7 @@ node("cxs-slave-master") {
                 // Merge feature to base branch
                 sh "git checkout $CHANGE_TARGET"
                 sh "git merge --squash ${localBranch}"
-                sh "git commit -a --author=\"${commitAuthor} <>\" --message=\"${commitMsg}\""
+                sh "git commit -a --author=\"${commitAuthor}\" --message=\"${commitMsg}\""
 
                 env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
