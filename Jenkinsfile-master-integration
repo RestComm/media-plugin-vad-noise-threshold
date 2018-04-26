@@ -117,6 +117,9 @@ node("cxs-slave-master") {
                 // Set PR state to CLOSED using Github API
                 def closeResponse = sh(returnStdout: true, script: 'curl --request PATCH -H "Authorization: token $GITHUB_TOKEN" https://api.github.com/repos/RestComm/media-plugin-vad-noise-threshold/pulls/$CHANGE_ID --data \'{"state":"closed"}\'')
                 echo "${closeResponse}"
+
+                // Delete remote branch
+                sh "git push origin --delete ${CHANGE_BRANCH}"
             }
 
             milestone 3
