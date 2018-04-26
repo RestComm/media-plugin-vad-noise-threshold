@@ -119,7 +119,10 @@ node("cxs-slave-master") {
                 echo "${closeResponse}"
 
                 // Delete remote branch
-                sh "git push origin --delete ${CHANGE_BRANCH}"
+                withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    // Push changes to target branch
+                    sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git --delete $CHANGE_BRANCH')
+                }
             }
 
             milestone 3
