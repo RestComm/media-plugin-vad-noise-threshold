@@ -91,7 +91,7 @@ node("cxs-slave-master") {
                 // Push Changes to base branch
                 withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     // Push changes to target branch
-                    //sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
+                    sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
                 }
             } catch (exc) {
                 throw exc
