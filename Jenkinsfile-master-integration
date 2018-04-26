@@ -2,6 +2,7 @@
 def featureScope
 def commitMsg
 def releaseVersion
+def commitAuthor
 
 node("cxs-slave-master") {
 
@@ -16,6 +17,14 @@ node("cxs-slave-master") {
 
         // Checkout PR
         checkout scm
+
+        // Find contributor
+        commitAuthor = sh(script: 'git log -1 HEAD~1 --pretty=format:\'%an <%ae>\'', returnStdout: true).trim()
+        echo "Author is ${commitAuthor}"
+
+        def githubUser = sh(script: 'git config user.name', returnStdout: true).trim()
+        def githubEmail = sh(script: 'git config user.email', returnStdout: true).trim()
+        echo "Github user: ${githubUser} <${githubEmail}>"
     }
 
     stage('Build') {
@@ -76,7 +85,7 @@ node("cxs-slave-master") {
                 // Merge feature to base branch
                 sh "git checkout $CHANGE_TARGET"
                 sh "git merge --squash ${localBranch}"
-                sh "git commit -a --author=\"$CHANGE_AUTHOR_DISPLAY_NAME <>\" --message=\"${commitMsg}\""
+                sh "git commit -a --author=\"${commitAuthor} <>\" --message=\"${commitMsg}\""
 
                 env.CURRENT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
@@ -86,7 +95,7 @@ node("cxs-slave-master") {
                 // Push Changes to base branch
                 withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
                     // Push changes to target branch
-                    sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
+                    //sh('git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git $CHANGE_TARGET')
                 }
             } catch (exc) {
                 throw exc
