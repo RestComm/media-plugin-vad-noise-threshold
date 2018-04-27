@@ -24,7 +24,7 @@ node("cxs-slave-master") {
         echo "Set release version to ${releaseVersion}"
 
         // Verify if branch exists
-        def versionTokens = ${releaseVersion}.split('.')
+        def versionTokens = releaseVersion.split('.')
         releaseBranch = "stable-${versionTokens[0]}-${versionTokens[1]}"
         def branchExists = sh(script: "git ls-remote --heads git@github.com:RestComm/media-plugin-vad-noise-threshold.git ${releaseBranch} | wc -l", returnStdout: true)
 
