@@ -28,7 +28,7 @@ node("cxs-slave-master") {
         releaseBranch = "stable-${versionTokens[0]}-${versionTokens[1]}"
         def branchExists = sh(script: "git ls-remote --heads git@github.com:RestComm/media-plugin-vad-noise-threshold.git ${releaseBranch} | wc -l", returnStdout: true)
 
-        if(${branchExists} == 1) {
+        if(branchExists == 1) {
             echo "Branch ${releaseBranch} already exists. Aborting job."
             currentBuild.result = 'FAILURE'
             return
