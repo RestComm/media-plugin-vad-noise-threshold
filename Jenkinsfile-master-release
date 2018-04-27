@@ -20,12 +20,13 @@ node("cxs-slave-master") {
 
         // Save release version
         def pom = readMavenPom file: 'pom.xml'
-        releaseVersion = "${pom.version}"
+        releaseVersion = pom.version
         echo "Set release version to ${releaseVersion}"
 
         // Verify if branch exists
-        def versionTokens = "${releaseVersion}".split('.')
-        echo "${versionTokens}"
+        echo "Trying to split ${releaseVersion}..."
+        def versionTokens = releaseVersion.split('.')
+        echo "Version tokens are ${versionTokens}"
         def majorVersion = versionTokens[0]
         def minorVersion = versionTokens[1]
         releaseBranch = "stable-${majorVersion}-${minorVersion}"
