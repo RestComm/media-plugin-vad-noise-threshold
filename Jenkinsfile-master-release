@@ -24,7 +24,7 @@ node("cxs-slave-master") {
         echo "Set release version to ${releaseVersion}"
 
         // Verify if branch exists
-        def versionTokens = releaseVersion.split('.')
+        def versionTokens = "${releaseVersion}".split('.')
         echo "${versionTokens}"
         def majorVersion = versionTokens[0]
         def minorVersion = versionTokens[1]
