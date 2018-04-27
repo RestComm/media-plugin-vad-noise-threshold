@@ -14,7 +14,7 @@ node("cxs-slave-master") {
         checkout scm
     }
 
-    stage ('Versioning') {
+    stage('Branch') {
         // Drop -SNAPSHOT qualifier
         sh 'mvn versions:set -DremoveSnapshot versions:commit'
 
@@ -22,9 +22,7 @@ node("cxs-slave-master") {
         def pom = readMavenPom file: 'pom.xml'
         releaseVersion = "${pom.version}"
         echo "Set release version to ${releaseVersion}"
-    }
 
-    stage('VerifyBranch') {
         // Verify if branch exists
         def versionTokens = ${releaseVersion}.split('.')
         releaseBranch = "stable-${versionTokens[0]}-${versionTokens[1]}"
@@ -37,39 +35,28 @@ node("cxs-slave-master") {
         } else {
             echo "Branch ${releaseBranch} does not exist. Proceeding to next stage."
         }
-    }
 
-    stage ('Build') {
-        sh 'mvn clean install -DskipTests'
-    }
-
-    stage ('Test') {
-        sh 'mvn test'
-        junit testResults: '**/target/surefire-reports/*.xml', testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-    }
-
-    stage('Branch') {
+        // Create stable branch
         withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh "git checkout -b ${releaseBranch}"
             sh "git commit -a -m \"New stable release ${releaseVersion}\""
             env.RELEASE_BRANCH = "${releaseBranch}"
-            sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-core.git ${RELEASE_BRANCH}')
+            sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git ${RELEASE_BRANCH}')
         }
     }
 
-    stage('Tag') {
+    stage('Delivery') {
+        // Tag code
         withCredentials([usernamePassword(credentialsId: 'CXSGithub', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
             sh "git tag ${releaseVersion}"
             sh('git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/RestComm/media-plugin-vad-noise-threshold.git --tags')
         }
-    }
 
-    stage ('Deploy') {
-        sh 'mvn package deploy:deploy -Pattach-sources,generate-javadoc,maven-release -DskipTests -DskipNexusStagingDeployMojo -DaltDeploymentRepository=nexus::default::$CXS_NEXUS2_URL'
-    }
+        // Deploy to CXS Nexus
+        //sh 'mvn package deploy:deploy -Pattach-sources,generate-javadoc,maven-release -DskipTests -DskipNexusStagingDeployMojo -DaltDeploymentRepository=nexus::default::$CXS_NEXUS2_URL'
 
-    stage ('Release') {
-        sh 'mvn clean deploy -DskipTests -Dgpg.passphrase=${env.GPG_PASSPHRASE} -Pattach-sources,generate-javadoc,release-sign-artifacts,cxs-oss-release'
+        // Release to Sonatype
+        //sh 'mvn clean deploy -DskipTests -Dgpg.passphrase=${env.GPG_PASSPHRASE} -Pattach-sources,generate-javadoc,release-sign-artifacts,cxs-oss-release'
     }
 
 }
