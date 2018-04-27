@@ -20,16 +20,11 @@ node("cxs-slave-master") {
 
         // Save release version
         def pom = readMavenPom file: 'pom.xml'
-        releaseVersion = pom.version
-        echo "Set release version to ${releaseVersion}"
+        echo "Set release version to ${pom.version}"
 
         // Verify if branch exists
-        echo "Trying to split ${releaseVersion}..."
-        def versionTokens = releaseVersion.split('.')
-        echo "Version tokens are ${versionTokens}"
-        def majorVersion = versionTokens[0]
-        def minorVersion = versionTokens[1]
-        releaseBranch = "stable-${majorVersion}-${minorVersion}"
+        def versionTokens = pom.version.split('\\.')
+        releaseBranch = "stable-${versionTokens[0]}-${versionTokens[1]}"
         echo "Release branch name is ${releaseBranch}"
 
         def branchExists = sh(script: "git ls-remote --heads git@github.com:RestComm/media-plugin-vad-noise-threshold.git ${releaseBranch} | wc -l", returnStdout: true)
